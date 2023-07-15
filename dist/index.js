@@ -9591,6 +9591,7 @@ function run() {
         }));
     });
 }
+const a = 3;
 run();
 
 
