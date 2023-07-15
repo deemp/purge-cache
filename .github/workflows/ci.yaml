@@ -1,7 +1,8 @@
 jobs:
   purge-old-caches:
     name: Purge old caches
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v3
@@ -11,6 +12,25 @@ jobs:
           debug: true
           # 3 days
           max-age: 259200
+
+  build:
+    name: Build app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: Install packages
+        run: npm ci
+      - name: Build app
+        run: npm run build
+      - name: Commit & Push changes
+        uses: actions-js/push@v1.4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
 
 "on":
   push:
